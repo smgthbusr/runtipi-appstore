@@ -7,7 +7,7 @@ services:
       - ${APP_DATA_DIR}/data/public:/var/www/app/public
       - ${APP_DATA_DIR}/data/storage:/var/www/app/storage
     ports:
-      - ${APP_PORT}:9000
+      - ${APP_PORT}:8080
     environment:
       - APP_URL=https://${APP_DOMAIN}
       - APP_KEY=${INVOICENINJA_APP_KEY}
@@ -28,7 +28,7 @@ services:
       - tipi_main_network
     restart: unless-stopped
     healthcheck:
-      test: wget --no-verbose --tries=1 --spider http://localhost:9000
+      test: wget --no-verbose --tries=1 --spider http://localhost:8080
       interval: 10s
       timeout: 5s
       retries: 5
@@ -37,7 +37,7 @@ services:
       # Main
       traefik.enable: true
       traefik.http.middlewares.invoiceninja-web-redirect.redirectscheme.scheme: https
-      traefik.http.services.invoiceninja.loadbalancer.server.port: 9000
+      traefik.http.services.invoiceninja.loadbalancer.server.port: 8080
       # Web
       traefik.http.routers.invoiceninja-insecure.rule: Host(`${APP_DOMAIN}`)
       traefik.http.routers.invoiceninja-insecure.entrypoints: web
