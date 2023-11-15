@@ -18,7 +18,7 @@
   "form_fields": [
     {
       "type": "text",
-      "label": "Invoice Ninja App Key (optional)",
+      "label": "Invoice Ninja App Key",
       "env_variable": "INVOICENINJA_APP_KEY"
     },
     {
