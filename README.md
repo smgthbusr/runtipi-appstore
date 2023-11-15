@@ -63,6 +63,7 @@ This is the official repository for the Tipi App Store. It contains all the apps
 - [Immich](https://github.com/immich-app/immich) - Photo and video backup solution directly from your mobile phone
 - [IT-Tools](https://github.com/CorentinTh/it-tools) - Collection of handy online tools for developers, with great UX.
 - [Invidious](https://github.com/iv-org/invidious) - An alternative front-end to YouTube
+- [InvoiceNinja](https://github.com/invoiceninja/invoiceninja) - A Self-Hosted Invoicing Solution
 - [Jackett](https://github.com/Jackett/Jackett) - API Support for your favorite torrent trackers
 - [Jellyfin](https://github.com/jellyfin/jellyfin) - A media server for your home collection
 - [Jellyfin Vue (Beta)](https://github.com/jellyfin/jellyfin-vue) - A modern web client for Jellyfin based on Vue
