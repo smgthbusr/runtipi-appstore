@@ -20,7 +20,6 @@
       "type": "text",
       "label": "Invoice Ninja Version",
       "env_variable": "INVOICENINJA_APP_KEY"
-      "regex": "^base64\:[A-Za-z0-9+\/]+={0,2}$"
     },
     {
       "type": "email",
@@ -35,8 +34,7 @@
     {
       "type": "text",
       "label": "DB Username (default: ninja)",
-      "env_variable": "INVOICENINJA_DB_USERNAME",
-      "regex": "^([a-zA-Z0-9\-\.\_])+$"
+      "env_variable": "INVOICENINJA_DB_USERNAME"
     },
     {
       "type": "password",
@@ -46,8 +44,7 @@
     {
       "type": "text",
       "label": "DB Database",
-      "env_variable": "INVOICENINJA_DB_DATABASE",
-      "regex": "^([a-zA-Z0-9\-\.\_])+$"
+      "env_variable": "INVOICENINJA_DB_DATABASE"
     },
     {
       "type": "password",
