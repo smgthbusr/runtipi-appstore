@@ -1,0 +1,59 @@
+{
+  "$schema": "../schema.json",
+  "name": "Invoice Ninja",
+  "port": 8765,
+  "available": true,
+  "exposable": true,
+  "id": "invoiceninja",
+  "tipi_version": 1,
+  "version": "5.5.37",
+  "categories": [
+    "finance"
+  ],
+  "description": "Invoice Ninja is a free, open-source solution for invoicing and billing customers.",
+  "short_desc": "Invoice generator for freelancers and small businesses.",
+  "author": "Invoice Ninja",
+  "source": "https://github.com/invoiceninja/invoiceninja",
+  "website": "https://invoiceninja.com/",
+  "form_fields": [
+    {
+      "type": "text",
+      "label": "Invoice Ninja Version",
+      "env_variable": "INVOICENINJA_APP_KEY"
+      "regex": "^base64\:[A-Za-z0-9+\/]+={0,2}$"
+    },
+    {
+      "type": "email",
+      "label": "Admin User Email - Invoice Ninja",
+      "env_variable": "INVOICENINJA_ADMIN_USER_EMAIL"
+    },
+    {
+      "type": "password",
+      "label": "Admin User Password - Invoice Ninja",
+      "env_variable": "INVOICENINJA_ADMIN_USER_PASS"
+    },
+    {
+      "type": "text",
+      "label": "DB Username (default: ninja)",
+      "env_variable": "INVOICENINJA_DB_USERNAME",
+      "regex": "^([a-zA-Z0-9\-\.\_])+$"
+    },
+    {
+      "type": "password",
+      "label": "DB Password",
+      "env_variable": "INVOICENINJA_DB_PASSWORD"
+    },
+    {
+      "type": "text",
+      "label": "DB Database",
+      "env_variable": "INVOICENINJA_DB_DATABASE",
+      "regex": "^([a-zA-Z0-9\-\.\_])+$"
+    },
+    {
+      "type": "password",
+      "label": "DB Root/Superuser Password",
+      "env_variable": "INVOICENINJA_DB_ROOT_PASSWORD"
+    }
+  ],
+  "supported_architectures": ["arm64", "amd64"]
+}
