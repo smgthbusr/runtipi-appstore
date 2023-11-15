@@ -1,0 +1,97 @@
+version: "3.7"
+services:
+  invoiceninja:
+    container_name: invoiceninja
+    image: invoiceninja/invoiceninja:5.5.37
+    volumes:
+      - ${APP_DATA_DIR}/data/public:/var/www/app/public
+      - ${APP_DATA_DIR}/data/storage:/var/www/app/storage
+    ports:
+      - ${APP_PORT}:8080
+    environment:
+      - APP_URL=https://${APP_DOMAIN}
+      - APP_KEY=${INVOICENINJA_APP_KEY}
+      - APP_DEBUG=${INVOICENINJA_DEBUG_MODE}
+      - REQUIRE_HTTPS=false
+      - PHANTOMJS_PDF_GENERATION=false
+      - PDF_GENERATOR=snappdf
+      - QUEUE_CONNECTION=database
+      - DB_HOST=invoiceninja-db
+      - DB_PORT=3306
+      - DB_DATABASE=${INVOICENINJA_DB_DATABASE}
+      - DB_USERNAME=${INVOICENINJA_DB_USERNAME}
+      - DB_PASSWORD=${INVOICENINJA_DB_PASSWORD}
+      - IN_USER_EMAIL=${INVOICENINJA_ADMIN_USER_EMAIL}
+      - IN_PASSWORD=${INVOICENINJA_ADMIN_USER_PASS}
+      - TRUSTED_PROXIES=10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
+    networks:
+      - tipi_main_network
+    restart: unless-stopped
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:8080
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    labels:
+      # Main
+      traefik.enable: true
+      traefik.http.middlewares.invoiceninja-web-redirect.redirectscheme.scheme: https
+      traefik.http.services.invoiceninja.loadbalancer.server.port: 8080
+      # Web
+      traefik.http.routers.invoiceninja-insecure.rule: Host(`${APP_DOMAIN}`)
+      traefik.http.routers.invoiceninja-insecure.entrypoints: web
+      traefik.http.routers.invoiceninja-insecure.service: invoiceninja
+      traefik.http.routers.invoiceninja-insecure.middlewares: invoiceninja-web-redirect
+      # Websecure
+      traefik.http.routers.invoiceninja.rule: Host(`${APP_DOMAIN}`)
+      traefik.http.routers.invoiceninja.entrypoints: websecure
+      traefik.http.routers.invoiceninja.service: invoiceninja
+      traefik.http.routers.invoiceninja.tls.certresolver: myresolver
+      # Local domain
+      traefik.http.routers.invoiceninja-local-insecure.rule: Host(`invoiceninja.${LOCAL_DOMAIN}`)
+      traefik.http.routers.invoiceninja-local-insecure.entrypoints: web
+      traefik.http.routers.invoiceninja-local-insecure.service: invoiceninja
+      traefik.http.routers.invoiceninja-local-insecure.middlewares: invoiceninja-web-redirect
+      # Local domain secure
+      traefik.http.routers.invoiceninja-local.rule: Host(`invoiceninja.${LOCAL_DOMAIN}`)
+      traefik.http.routers.invoiceninja-local.entrypoints: websecure
+      traefik.http.routers.invoiceninja-local.service: invoiceninja
+      traefik.http.routers.invoiceninja-local.tls: true
+    depends_on:
+      invoiceninja-db:
+        condition: service_healthy
+
+  invoiceninja-db:
+    image: mariadb:10.4
+    container_name: invoiceninja-db
+    volumes:
+      - ${APP_DATA_DIR}/data/mariadb:/var/lib/mariadb/data
+    environment:
+      - MYSQL_ROOT_PASSWORD=${INVOICENINJA_DB_ROOT_PASSWORD}
+      - MYSQL_USER=${INVOICENINJA_DB_USERNAME}
+      - MYSQL_PASSWORD=${INVOICENINJA_DB_PASSWORD}
+      - MYSQL_DATABASE=${INVOICENINJA_DB_DATABASE}
+    restart: unless-stopped
+    networks:
+      - tipi_main_network
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "invoiceninja"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  invoiceninja-db-backup:
+    image: selim13/automysqlbackup:2.6-9
+    container_name: invoiceninja-db-backup
+    environment:
+      - USERNAME=root
+      - PASSWORD=${INVOICENINJA_DB_ROOT_PASSWORD}
+      - DBHOST=invoiceninja-db
+      - DBEXCLUDE='performance_schema information_schema'
+      - CRON_SCHEDULE='0 0 * * *'
+      - EXTRA_OPTS='--single-transaction'
+    volumes:
+      - ${APP_DATA_DIR}/data/db-backup:/backup
+    depends_on: invoiceninja-db
